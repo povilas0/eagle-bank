@@ -22,6 +22,7 @@ Spring Boot 4 (Java 25) REST API for a fictional bank. It allows to create, fetc
 - Use TDD approach (write a failing test first)
 - Make small iterations
 - Ask to validate and confirm before proceeding
+- Prefer JDBC Template, manually written queries and row mapping over the Spring Data
 
 ## Commands
 
@@ -36,3 +37,4 @@ Always run tests after changes.
 
 Read relevant docs before starting a task:
 - `docs/openapi.yaml` — Open API spec that every endpoint in this API must follow.
+- `docs/scenarios.md` - Scenarios that this API must implement.
