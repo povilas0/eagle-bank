@@ -23,6 +23,9 @@ Spring Boot 4 (Java 25) REST API for a fictional bank. It allows to create, fetc
 - Make small iterations
 - Ask to validate and confirm before proceeding
 - Prefer JDBC Template, manually written queries and row mapping over the Spring Data
+- Ensure clear separation between Web, Domain and Persistence layers
+- Business logic must live in domain layer
+- Web and Persistence layers must have DTOs that are mapped to & from domain layer objects
 
 ## Commands
 
