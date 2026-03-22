@@ -28,6 +28,12 @@ public class AccountService {
         return accountRepository.findByUserId(userId);
     }
 
+    public void deleteAccount(DeleteAccountCommand command) {
+        accountRepository.findByAccountNumber(command.accountNumber())
+                .orElseThrow(() -> new AccountNotFoundException(command.accountNumber()));
+        accountRepository.delete(command.accountNumber());
+    }
+
     public Account updateAccount(String accountNumber, UpdateAccountCommand command) {
         Account existing = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException(accountNumber));

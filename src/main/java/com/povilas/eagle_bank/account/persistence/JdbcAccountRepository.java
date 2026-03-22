@@ -49,6 +49,15 @@ public class JdbcAccountRepository implements AccountRepository {
     }
 
     @Override
+    public void delete(String accountNumber) {
+        var params = new MapSqlParameterSource("accountNumber", accountNumber);
+        jdbcTemplate.update(
+                "DELETE FROM accounts WHERE account_number = :accountNumber",
+                params
+        );
+    }
+
+    @Override
     public void update(Account account) {
         AccountEntity entity = mapper.toEntity(account);
         var params = new MapSqlParameterSource()

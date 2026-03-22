@@ -2,6 +2,7 @@ package com.povilas.eagle_bank.account.api;
 
 import com.povilas.eagle_bank.account.domain.Account;
 import com.povilas.eagle_bank.account.domain.CreateAccountCommand;
+import com.povilas.eagle_bank.account.domain.DeleteAccountCommand;
 import com.povilas.eagle_bank.account.domain.UpdateAccountCommand;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,10 @@ public class AccountApiMapper {
 
     public UpdateAccountCommand toUpdateCommand(UpdateAccountRequest request) {
         return new UpdateAccountCommand(request.name(), request.accountType());
+    }
+
+    public DeleteAccountCommand toDeleteCommand(String accountNumber) {
+        return new DeleteAccountCommand(accountNumber);
     }
 
     public ListAccountsResponse toListResponse(List<Account> accounts) {

@@ -38,4 +38,10 @@ public class AccountController {
                                          @RequestBody UpdateAccountRequest request) {
         return mapper.toResponse(accountService.updateAccount(accountNumber, mapper.toUpdateCommand(request)));
     }
+
+    @DeleteMapping("/{accountNumber}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccount(@PathVariable String accountNumber) {
+        accountService.deleteAccount(mapper.toDeleteCommand(accountNumber));
+    }
 }
