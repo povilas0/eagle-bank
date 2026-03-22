@@ -1,4 +1,4 @@
-package com.povilas.eagle_bank.user.api;
+package com.povilas.eagle_bank.common.api;
 
 import com.povilas.eagle_bank.account.domain.AccountNotFoundException;
 import com.povilas.eagle_bank.account.domain.InsufficientFundsException;
