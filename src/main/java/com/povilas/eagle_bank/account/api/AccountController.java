@@ -17,6 +17,11 @@ public class AccountController {
         this.mapper = mapper;
     }
 
+    @GetMapping
+    public ListAccountsResponse listAccounts(@RequestParam String userId) {
+        return mapper.toListResponse(accountService.listAccounts(userId));
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AccountResponse createAccount(@Valid @RequestBody CreateAccountRequest request) {

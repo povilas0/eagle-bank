@@ -2,6 +2,8 @@ package com.povilas.eagle_bank.account.domain;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AccountService {
 
@@ -15,5 +17,9 @@ public class AccountService {
         Account account = new Account(command);
         accountRepository.save(account);
         return account;
+    }
+
+    public List<Account> listAccounts(String userId) {
+        return accountRepository.findByUserId(userId);
     }
 }

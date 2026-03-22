@@ -4,11 +4,17 @@ import com.povilas.eagle_bank.account.domain.Account;
 import com.povilas.eagle_bank.account.domain.CreateAccountCommand;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class AccountApiMapper {
 
     public CreateAccountCommand toCreateCommand(CreateAccountRequest request) {
         return new CreateAccountCommand(request.userId(), request.name(), request.accountType());
+    }
+
+    public ListAccountsResponse toListResponse(List<Account> accounts) {
+        return new ListAccountsResponse(accounts.stream().map(this::toResponse).toList());
     }
 
     public AccountResponse toResponse(Account account) {
