@@ -1,16 +1,11 @@
 package com.povilas.eagle_bank.account.api;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.povilas.eagle_bank.support.BaseControllerTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.stream.Stream;
 
@@ -19,18 +14,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-class CreateAccountControllerTest {
-
-    @Autowired
-    private WebApplicationContext wac;
-
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-    }
+class CreateAccountControllerTest extends BaseControllerTest {
 
     @Test
     void createAccount_withValidData_returns201() throws Exception {
@@ -97,30 +81,6 @@ class CreateAccountControllerTest {
                         """,
                         "accountType")
         );
-    }
-
-    private String createUser() throws Exception {
-        String response = mockMvc.perform(post("/v1/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "name": "Test User",
-                                    "address": {
-                                        "line1": "123 Test Street",
-                                        "town": "Test Town",
-                                        "county": "Test County",
-                                        "postcode": "TE1 1ST"
-                                    },
-                                    "phoneNumber": "+441234567890",
-                                    "email": "test@example.com"
-                                }
-                                """))
-                .andExpect(status().isCreated())
-                .andReturn()
-                .getResponse()
-                .getContentAsString();
-
-        return response.replaceAll(".*\"id\":\"([^\"]+)\".*", "$1");
     }
 
     private static String validRequest(String userId) {
