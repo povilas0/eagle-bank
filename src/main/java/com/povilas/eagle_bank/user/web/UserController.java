@@ -17,6 +17,11 @@ public class UserController {
         this.mapper = mapper;
     }
 
+    @GetMapping("/{userId}")
+    public UserResponse getUser(@PathVariable String userId) {
+        return mapper.toResponse(userService.getUser(userId));
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {

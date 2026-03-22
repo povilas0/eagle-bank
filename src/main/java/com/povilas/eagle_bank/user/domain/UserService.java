@@ -14,6 +14,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public User getUser(String userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
     public User createUser(String name, Address address, String phoneNumber, String email) {
         String id = "usr-" + UUID.randomUUID().toString().replace("-", "");
         Instant now = Instant.now();

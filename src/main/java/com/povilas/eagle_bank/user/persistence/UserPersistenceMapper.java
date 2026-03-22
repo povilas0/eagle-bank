@@ -4,6 +4,8 @@ import com.povilas.eagle_bank.user.domain.Address;
 import com.povilas.eagle_bank.user.domain.User;
 import org.springframework.stereotype.Component;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 
 @Component
@@ -23,6 +25,23 @@ public class UserPersistenceMapper {
                 user.address().postcode(),
                 Timestamp.from(user.createdTimestamp()),
                 Timestamp.from(user.updatedTimestamp())
+        );
+    }
+
+    public UserEntity toEntity(ResultSet rs) throws SQLException {
+        return new UserEntity(
+                rs.getString("id"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getString("phone_number"),
+                rs.getString("address_line1"),
+                rs.getString("address_line2"),
+                rs.getString("address_line3"),
+                rs.getString("address_town"),
+                rs.getString("address_county"),
+                rs.getString("address_postcode"),
+                rs.getTimestamp("created_timestamp"),
+                rs.getTimestamp("updated_timestamp")
         );
     }
 

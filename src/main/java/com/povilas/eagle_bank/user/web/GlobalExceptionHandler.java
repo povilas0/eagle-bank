@@ -1,5 +1,6 @@
 package com.povilas.eagle_bank.user.web;
 
+import com.povilas.eagle_bank.user.domain.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,14 @@ public class GlobalExceptionHandler {
     record ErrorDetail(String field, String message, String type) {}
 
     record BadRequestErrorResponse(String message, List<ErrorDetail> details) {}
+
+    record ErrorResponse(String message) {}
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserNotFound(UserNotFoundException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
