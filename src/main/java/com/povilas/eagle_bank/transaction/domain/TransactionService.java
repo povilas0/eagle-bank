@@ -1,33 +1,27 @@
 package com.povilas.eagle_bank.transaction.domain;
 
-import com.povilas.eagle_bank.account.domain.Account;
-import com.povilas.eagle_bank.account.domain.AccountNotFoundException;
-import com.povilas.eagle_bank.account.domain.AccountRepository;
+import com.povilas.eagle_bank.account.domain.AccountService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
-    public TransactionService(TransactionRepository transactionRepository, AccountRepository accountRepository) {
+    public TransactionService(TransactionRepository transactionRepository, AccountService accountService) {
         this.transactionRepository = transactionRepository;
-        this.accountRepository = accountRepository;
+        this.accountService = accountService;
     }
 
     public Transaction createTransaction(CreateTransactionCommand command) {
-        Account account = accountRepository.findByAccountNumber(command.accountNumber())
-                .orElseThrow(() -> new AccountNotFoundException(command.accountNumber()));
-
         Transaction transaction = new Transaction(command);
 
-        Account updatedAccount = switch (transaction.type()) {
-            case DEPOSIT -> account.deposit(command.amount());
-            case WITHDRAWAL -> account.withdraw(command.amount());
-        };
+        switch (transaction.type()) {
+            case DEPOSIT -> accountService.deposit(command.accountNumber(), command.amount());
+            case WITHDRAWAL -> accountService.withdraw(command.accountNumber(), command.amount());
+        }
 
-        accountRepository.update(updatedAccount);
         transactionRepository.save(transaction);
         return transaction;
     }

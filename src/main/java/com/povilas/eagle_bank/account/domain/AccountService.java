@@ -2,6 +2,7 @@ package com.povilas.eagle_bank.account.domain;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -32,6 +33,18 @@ public class AccountService {
         accountRepository.findByAccountNumber(command.accountNumber())
                 .orElseThrow(() -> new AccountNotFoundException(command.accountNumber()));
         accountRepository.delete(command.accountNumber());
+    }
+
+    public void deposit(String accountNumber, BigDecimal amount) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+        accountRepository.update(account.deposit(amount));
+    }
+
+    public void withdraw(String accountNumber, BigDecimal amount) {
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+        accountRepository.update(account.withdraw(amount));
     }
 
     public Account updateAccount(String accountNumber, UpdateAccountCommand command) {
