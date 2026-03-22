@@ -1,6 +1,7 @@
 package com.povilas.eagle_bank.user.web;
 
 import com.povilas.eagle_bank.user.domain.Address;
+import com.povilas.eagle_bank.user.domain.UpdateUserCommand;
 import com.povilas.eagle_bank.user.domain.User;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,18 @@ public class UserWebMapper {
                 request.address().postcode()
         );
         return new User(null, request.name(), address, request.phoneNumber(), request.email(), null, null);
+    }
+
+    public UpdateUserCommand toUpdateCommand(UpdateUserRequest request) {
+        Address address = request.address() == null ? null : new Address(
+                request.address().line1(),
+                request.address().line2(),
+                request.address().line3(),
+                request.address().town(),
+                request.address().county(),
+                request.address().postcode()
+        );
+        return new UpdateUserCommand(request.name(), address, request.phoneNumber(), request.email());
     }
 
     public UserResponse toResponse(User user) {

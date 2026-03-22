@@ -36,6 +36,40 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
+    public void update(User user) {
+        UserEntity entity = mapper.toEntity(user);
+        var params = new MapSqlParameterSource()
+                .addValue("id", entity.id())
+                .addValue("name", entity.name())
+                .addValue("email", entity.email())
+                .addValue("phoneNumber", entity.phoneNumber())
+                .addValue("addressLine1", entity.addressLine1())
+                .addValue("addressLine2", entity.addressLine2())
+                .addValue("addressLine3", entity.addressLine3())
+                .addValue("addressTown", entity.addressTown())
+                .addValue("addressCounty", entity.addressCounty())
+                .addValue("addressPostcode", entity.addressPostcode())
+                .addValue("updatedTimestamp", entity.updatedTimestamp());
+        jdbcTemplate.update(
+                """
+                UPDATE users SET
+                    name = :name,
+                    email = :email,
+                    phone_number = :phoneNumber,
+                    address_line1 = :addressLine1,
+                    address_line2 = :addressLine2,
+                    address_line3 = :addressLine3,
+                    address_town = :addressTown,
+                    address_county = :addressCounty,
+                    address_postcode = :addressPostcode,
+                    updated_timestamp = :updatedTimestamp
+                WHERE id = :id
+                """,
+                params
+        );
+    }
+
+    @Override
     public void save(User user) {
         UserEntity entity = mapper.toEntity(user);
         var params = new MapSqlParameterSource()
