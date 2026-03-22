@@ -29,6 +29,7 @@ Spring Boot 4 (Java 25) REST API for a fictional bank. It allows to create, fetc
 - Web and Persistence layers must have DTOs that are mapped to & from domain layer objects. Mappings should happen in dedicated 'Mapper' Spring Components
 - Web Controllers must return POJOs instead of ResponseEntity
 - Package by feature (feature packages can have nested 'layer' packages) so it is easier to separate this service into distributed smaller services
+- SELECT SQL queries must explicitly list fields 
 
 ## Commands
 
