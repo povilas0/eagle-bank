@@ -31,6 +31,19 @@ public record Account(
                 Instant.now());
     }
 
+    public Account deposit(BigDecimal amount) {
+        return new Account(accountNumber, sortCode, userId, name, accountType,
+                balance.add(amount), currency, createdTimestamp, Instant.now());
+    }
+
+    public Account withdraw(BigDecimal amount) {
+        if (balance.compareTo(amount) < 0) {
+            throw new InsufficientFundsException(accountNumber);
+        }
+        return new Account(accountNumber, sortCode, userId, name, accountType,
+                balance.subtract(amount), currency, createdTimestamp, Instant.now());
+    }
+
     public Account withUpdates(UpdateAccountCommand command) {
         return new Account(
                 accountNumber,

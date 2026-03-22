@@ -64,11 +64,13 @@ public class JdbcAccountRepository implements AccountRepository {
                 .addValue("accountNumber", entity.accountNumber())
                 .addValue("name", entity.name())
                 .addValue("accountType", entity.accountType())
+                .addValue("balance", entity.balance())
                 .addValue("updatedTimestamp", entity.updatedTimestamp());
         jdbcTemplate.update(
                 """
                 UPDATE accounts
-                SET name = :name, account_type = :accountType, updated_timestamp = :updatedTimestamp
+                SET name = :name, account_type = :accountType, balance = :balance,
+                    updated_timestamp = :updatedTimestamp
                 WHERE account_number = :accountNumber
                 """,
                 params
