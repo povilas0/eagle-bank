@@ -2,6 +2,7 @@ package com.povilas.eagle_bank.user.web;
 
 import com.povilas.eagle_bank.user.domain.Address;
 import com.povilas.eagle_bank.user.domain.CreateUserCommand;
+import com.povilas.eagle_bank.user.domain.DeleteUserCommand;
 import com.povilas.eagle_bank.user.domain.UpdateUserCommand;
 import com.povilas.eagle_bank.user.domain.User;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,10 @@ public class UserWebMapper {
                 request.address().postcode()
         );
         return new CreateUserCommand(request.name(), address, request.phoneNumber(), request.email());
+    }
+
+    public DeleteUserCommand toDeleteCommand(String userId) {
+        return new DeleteUserCommand(userId);
     }
 
     public UpdateUserCommand toUpdateCommand(UpdateUserRequest request) {

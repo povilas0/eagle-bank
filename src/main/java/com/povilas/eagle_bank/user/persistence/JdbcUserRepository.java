@@ -36,6 +36,15 @@ public class JdbcUserRepository implements UserRepository {
     }
 
     @Override
+    public void delete(String userId) {
+        var params = new MapSqlParameterSource("userId", userId);
+        jdbcTemplate.update(
+                "DELETE FROM users WHERE id = :userId",
+                params
+        );
+    }
+
+    @Override
     public void update(User user) {
         UserEntity entity = mapper.toEntity(user);
         var params = new MapSqlParameterSource()

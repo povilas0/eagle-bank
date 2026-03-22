@@ -17,6 +17,12 @@ public class UserController {
         this.mapper = mapper;
     }
 
+    @DeleteMapping("/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable String userId) {
+        userService.deleteUser(mapper.toDeleteCommand(userId));
+    }
+
     @GetMapping("/{userId}")
     public UserResponse getUser(@PathVariable String userId) {
         return mapper.toResponse(userService.getUser(userId));

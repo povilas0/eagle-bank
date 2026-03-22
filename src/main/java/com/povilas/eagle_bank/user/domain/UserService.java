@@ -35,6 +35,12 @@ public class UserService {
         return updated;
     }
 
+    public void deleteUser(DeleteUserCommand command) {
+        userRepository.findById(command.userId())
+                .orElseThrow(() -> new UserNotFoundException(command.userId()));
+        userRepository.delete(command.userId());
+    }
+
     public User createUser(CreateUserCommand command) {
         String id = "usr-" + UUID.randomUUID().toString().replace("-", "");
         Instant now = Instant.now();
