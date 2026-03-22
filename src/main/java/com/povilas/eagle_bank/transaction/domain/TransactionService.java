@@ -3,6 +3,8 @@ package com.povilas.eagle_bank.transaction.domain;
 import com.povilas.eagle_bank.account.domain.AccountService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TransactionService {
 
@@ -24,5 +26,10 @@ public class TransactionService {
 
         transactionRepository.save(transaction);
         return transaction;
+    }
+
+    public List<Transaction> listTransactions(String accountNumber) {
+        accountService.getAccount(accountNumber);
+        return transactionRepository.findByAccountNumber(accountNumber);
     }
 }

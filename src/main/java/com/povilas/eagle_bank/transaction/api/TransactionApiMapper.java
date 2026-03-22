@@ -4,6 +4,8 @@ import com.povilas.eagle_bank.transaction.domain.CreateTransactionCommand;
 import com.povilas.eagle_bank.transaction.domain.Transaction;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class TransactionApiMapper {
 
@@ -15,6 +17,10 @@ public class TransactionApiMapper {
                 request.type(),
                 request.reference()
         );
+    }
+
+    public ListTransactionsResponse toListResponse(List<Transaction> transactions) {
+        return new ListTransactionsResponse(transactions.stream().map(this::toResponse).toList());
     }
 
     public TransactionResponse toResponse(Transaction transaction) {
