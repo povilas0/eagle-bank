@@ -1,6 +1,7 @@
 package com.povilas.eagle_bank.user.web;
 
 import com.povilas.eagle_bank.user.domain.Address;
+import com.povilas.eagle_bank.user.domain.CreateUserCommand;
 import com.povilas.eagle_bank.user.domain.UpdateUserCommand;
 import com.povilas.eagle_bank.user.domain.User;
 import org.springframework.stereotype.Component;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserWebMapper {
 
-    public User toDomain(CreateUserRequest request) {
+    public CreateUserCommand toCreateCommand(CreateUserRequest request) {
         Address address = new Address(
                 request.address().line1(),
                 request.address().line2(),
@@ -17,7 +18,7 @@ public class UserWebMapper {
                 request.address().county(),
                 request.address().postcode()
         );
-        return new User(null, request.name(), address, request.phoneNumber(), request.email(), null, null);
+        return new CreateUserCommand(request.name(), address, request.phoneNumber(), request.email());
     }
 
     public UpdateUserCommand toUpdateCommand(UpdateUserRequest request) {

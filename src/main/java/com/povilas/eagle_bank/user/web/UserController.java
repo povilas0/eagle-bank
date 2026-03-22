@@ -31,13 +31,6 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
-        var domainUser = mapper.toDomain(request);
-        var created = userService.createUser(
-                domainUser.name(),
-                domainUser.address(),
-                domainUser.phoneNumber(),
-                domainUser.email()
-        );
-        return mapper.toResponse(created);
+        return mapper.toResponse(userService.createUser(mapper.toCreateCommand(request)));
     }
 }

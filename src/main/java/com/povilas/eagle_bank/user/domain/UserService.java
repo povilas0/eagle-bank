@@ -35,10 +35,10 @@ public class UserService {
         return updated;
     }
 
-    public User createUser(String name, Address address, String phoneNumber, String email) {
+    public User createUser(CreateUserCommand command) {
         String id = "usr-" + UUID.randomUUID().toString().replace("-", "");
         Instant now = Instant.now();
-        User user = new User(id, name, address, phoneNumber, email, now, now);
+        User user = new User(id, command.name(), command.address(), command.phoneNumber(), command.email(), now, now);
         userRepository.save(user);
         return user;
     }
