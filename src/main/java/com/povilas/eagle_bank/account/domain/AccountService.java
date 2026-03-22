@@ -27,4 +27,12 @@ public class AccountService {
     public List<Account> listAccounts(String userId) {
         return accountRepository.findByUserId(userId);
     }
+
+    public Account updateAccount(String accountNumber, UpdateAccountCommand command) {
+        Account existing = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+        Account updated = existing.withUpdates(command);
+        accountRepository.update(updated);
+        return updated;
+    }
 }

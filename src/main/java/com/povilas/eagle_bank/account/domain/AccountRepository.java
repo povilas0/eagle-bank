@@ -5,6 +5,7 @@ import java.util.Optional;
 
 public interface AccountRepository {
     void save(Account account);
+    void update(Account account);
     Optional<Account> findByAccountNumber(String accountNumber);
     List<Account> findByUserId(String userId);
 }

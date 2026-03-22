@@ -49,6 +49,24 @@ public class JdbcAccountRepository implements AccountRepository {
     }
 
     @Override
+    public void update(Account account) {
+        AccountEntity entity = mapper.toEntity(account);
+        var params = new MapSqlParameterSource()
+                .addValue("accountNumber", entity.accountNumber())
+                .addValue("name", entity.name())
+                .addValue("accountType", entity.accountType())
+                .addValue("updatedTimestamp", entity.updatedTimestamp());
+        jdbcTemplate.update(
+                """
+                UPDATE accounts
+                SET name = :name, account_type = :accountType, updated_timestamp = :updatedTimestamp
+                WHERE account_number = :accountNumber
+                """,
+                params
+        );
+    }
+
+    @Override
     public void save(Account account) {
         AccountEntity entity = mapper.toEntity(account);
         var params = new MapSqlParameterSource()

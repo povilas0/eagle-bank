@@ -32,4 +32,10 @@ public class AccountController {
     public AccountResponse createAccount(@Valid @RequestBody CreateAccountRequest request) {
         return mapper.toResponse(accountService.createAccount(mapper.toCreateCommand(request)));
     }
+
+    @PatchMapping("/{accountNumber}")
+    public AccountResponse updateAccount(@PathVariable String accountNumber,
+                                         @RequestBody UpdateAccountRequest request) {
+        return mapper.toResponse(accountService.updateAccount(accountNumber, mapper.toUpdateCommand(request)));
+    }
 }

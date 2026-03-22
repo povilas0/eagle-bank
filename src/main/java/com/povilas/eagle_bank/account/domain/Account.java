@@ -30,4 +30,18 @@ public record Account(
                 Instant.now(),
                 Instant.now());
     }
+
+    public Account withUpdates(UpdateAccountCommand command) {
+        return new Account(
+                accountNumber,
+                sortCode,
+                userId,
+                command.name() != null ? command.name() : name,
+                command.accountType() != null ? AccountType.fromValue(command.accountType()) : accountType,
+                balance,
+                currency,
+                createdTimestamp,
+                Instant.now()
+        );
+    }
 }
