@@ -1,0 +1,25 @@
+package com.povilas.eagle_bank.account.api;
+
+import com.povilas.eagle_bank.account.domain.AccountService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/accounts")
+public class AccountController {
+
+    private final AccountService accountService;
+    private final AccountApiMapper mapper;
+
+    public AccountController(AccountService accountService, AccountApiMapper mapper) {
+        this.accountService = accountService;
+        this.mapper = mapper;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public AccountResponse createAccount(@Valid @RequestBody CreateAccountRequest request) {
+        return mapper.toResponse(accountService.createAccount(mapper.toCreateCommand(request)));
+    }
+}
