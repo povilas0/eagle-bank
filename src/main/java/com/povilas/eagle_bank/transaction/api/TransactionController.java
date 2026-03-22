@@ -22,6 +22,12 @@ public class TransactionController {
         return mapper.toListResponse(transactionService.listTransactions(accountNumber));
     }
 
+    @GetMapping("/{transactionId}")
+    public TransactionResponse getTransaction(@PathVariable String accountNumber,
+                                              @PathVariable String transactionId) {
+        return mapper.toResponse(transactionService.getTransaction(accountNumber, transactionId));
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionResponse createTransaction(@PathVariable String accountNumber,

@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JdbcTransactionRepository implements TransactionRepository {
@@ -17,6 +18,19 @@ public class JdbcTransactionRepository implements TransactionRepository {
     public JdbcTransactionRepository(NamedParameterJdbcTemplate jdbcTemplate, TransactionPersistenceMapper mapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.mapper = mapper;
+    }
+
+    @Override
+    public Optional<Transaction> findById(String transactionId) {
+        var params = new MapSqlParameterSource("id", transactionId);
+        return jdbcTemplate.query(
+                """
+                SELECT id, account_number, amount, currency, type, reference, created_timestamp
+                FROM transactions WHERE id = :id
+                """,
+                params,
+                (rs, rowNum) -> mapper.toDomain(mapper.toEntity(rs))
+        ).stream().findFirst();
     }
 
     @Override

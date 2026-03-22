@@ -2,10 +2,8 @@ package com.povilas.eagle_bank.transaction.api;
 
 import com.povilas.eagle_bank.support.BaseControllerTest;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,17 +46,4 @@ class ListTransactionsControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.message").exists());
     }
 
-    private void createTransaction(String accountNumber, double amount, String type, String reference) throws Exception {
-        mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "amount": %s,
-                                    "currency": "GBP",
-                                    "type": "%s",
-                                    "reference": "%s"
-                                }
-                                """.formatted(amount, type, reference)))
-                .andExpect(status().isCreated());
-    }
 }

@@ -28,6 +28,12 @@ public class TransactionService {
         return transaction;
     }
 
+    public Transaction getTransaction(String accountNumber, String transactionId) {
+        accountService.getAccount(accountNumber);
+        return transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new TransactionNotFoundException(transactionId));
+    }
+
     public List<Transaction> listTransactions(String accountNumber) {
         accountService.getAccount(accountNumber);
         return transactionRepository.findByAccountNumber(accountNumber);

@@ -1,5 +1,6 @@
 package com.povilas.eagle_bank.support;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,8 @@ public abstract class BaseControllerTest {
     @Autowired
     private WebApplicationContext wac;
 
+    protected final ObjectMapper objectMapper = new ObjectMapper();
+
     protected MockMvc mockMvc;
 
     @BeforeEach
@@ -25,7 +28,7 @@ public abstract class BaseControllerTest {
     }
 
     protected String createUser() throws Exception {
-        String response = mockMvc.perform(post("/v1/users")
+        var result = mockMvc.perform(post("/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -41,9 +44,9 @@ public abstract class BaseControllerTest {
                                 }
                                 """))
                 .andExpect(status().isCreated())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn();
 
-        return response.replaceAll(".*\"id\":\"([^\"]+)\".*", "$1");
+        return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asText();
     }
 
     protected String createAccount(String userId) throws Exception {
@@ -51,7 +54,7 @@ public abstract class BaseControllerTest {
     }
 
     protected String createAccount(String userId, String name) throws Exception {
-        String response = mockMvc.perform(post("/v1/accounts")
+        var result = mockMvc.perform(post("/v1/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -61,8 +64,25 @@ public abstract class BaseControllerTest {
                                 }
                                 """.formatted(userId, name)))
                 .andExpect(status().isCreated())
-                .andReturn().getResponse().getContentAsString();
+                .andReturn();
 
-        return response.replaceAll(".*\"accountNumber\":\"([^\"]+)\".*", "$1");
+        return objectMapper.readTree(result.getResponse().getContentAsString()).get("accountNumber").asText();
+    }
+
+    protected String createTransaction(String accountNumber, double amount, String type, String reference) throws Exception {
+        var result = mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "amount": %s,
+                                    "currency": "GBP",
+                                    "type": "%s",
+                                    "reference": "%s"
+                                }
+                                """.formatted(amount, type, reference)))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asText();
     }
 }
