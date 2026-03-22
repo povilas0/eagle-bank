@@ -1,4 +1,4 @@
-package com.povilas.eagle_bank.user.web;
+package com.povilas.eagle_bank.user.api;
 
 public record AddressResponse(
         String line1,

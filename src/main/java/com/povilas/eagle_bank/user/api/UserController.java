@@ -1,4 +1,4 @@
-package com.povilas.eagle_bank.user.web;
+package com.povilas.eagle_bank.user.api;
 
 import com.povilas.eagle_bank.user.domain.UserService;
 import jakarta.validation.Valid;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final UserWebMapper mapper;
+    private final UserApiMapper mapper;
 
-    public UserController(UserService userService, UserWebMapper mapper) {
+    public UserController(UserService userService, UserApiMapper mapper) {
         this.userService = userService;
         this.mapper = mapper;
     }

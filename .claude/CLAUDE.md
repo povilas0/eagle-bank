@@ -23,11 +23,11 @@ Spring Boot 4 (Java 25) REST API for a fictional bank. It allows to create, fetc
 - Make small iterations
 - Ask to validate and confirm before proceeding
 - Prefer JDBC Template, manually written queries and row mapping over the Spring Data
-- Ensure clear separation between Web, Domain and Persistence layers
+- Ensure clear separation between Api, Domain and Persistence layers
 - Business logic must live in domain layer
-- Domain layer should be reliant on Web or Persistence layer classes
-- Web and Persistence layers must have DTOs that are mapped to & from domain layer objects. Mappings should happen in dedicated 'Mapper' Spring Components
-- Web Controllers must return POJOs instead of ResponseEntity
+- Domain layer should be reliant on Api or Persistence layer classes
+- Api and Persistence layers must have DTOs that are mapped to & from domain layer objects. Mappings should happen in dedicated 'Mapper' Spring Components
+- Api Controllers must return POJOs instead of ResponseEntity
 - Package by feature (feature packages can have nested 'layer' packages) so it is easier to separate this service into distributed smaller services
 - SELECT SQL queries must explicitly list fields 
 

@@ -1,4 +1,4 @@
-package com.povilas.eagle_bank.user.web;
+package com.povilas.eagle_bank.user.api;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

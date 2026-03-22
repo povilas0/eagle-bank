@@ -1,4 +1,4 @@
-package com.povilas.eagle_bank.user.web;
+package com.povilas.eagle_bank.user.api;
 
 import com.povilas.eagle_bank.user.domain.Address;
 import com.povilas.eagle_bank.user.domain.CreateUserCommand;
@@ -8,7 +8,7 @@ import com.povilas.eagle_bank.user.domain.User;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserWebMapper {
+public class UserApiMapper {
 
     public CreateUserCommand toCreateCommand(CreateUserRequest request) {
         Address address = new Address(

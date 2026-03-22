@@ -1,4 +1,4 @@
-package com.povilas.eagle_bank.user.web;
+package com.povilas.eagle_bank.user.api;
 
 import com.povilas.eagle_bank.user.domain.UserNotFoundException;
 import org.springframework.http.HttpStatus;
