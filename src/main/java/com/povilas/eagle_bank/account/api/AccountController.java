@@ -17,6 +17,11 @@ public class AccountController {
         this.mapper = mapper;
     }
 
+    @GetMapping("/{accountNumber}")
+    public AccountResponse getAccount(@PathVariable String accountNumber) {
+        return mapper.toResponse(accountService.getAccount(accountNumber));
+    }
+
     @GetMapping
     public ListAccountsResponse listAccounts(@RequestParam String userId) {
         return mapper.toListResponse(accountService.listAccounts(userId));

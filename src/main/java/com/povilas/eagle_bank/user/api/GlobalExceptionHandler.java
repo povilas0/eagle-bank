@@ -1,5 +1,6 @@
 package com.povilas.eagle_bank.user.api;
 
+import com.povilas.eagle_bank.account.domain.AccountNotFoundException;
 import com.povilas.eagle_bank.account.domain.InvalidAccountTypeException;
 import com.povilas.eagle_bank.user.domain.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,12 @@ public class GlobalExceptionHandler {
     record BadRequestErrorResponse(String message, List<ErrorDetail> details) {}
 
     record ErrorResponse(String message) {}
+
+    @ExceptionHandler(AccountNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleAccountNotFound(AccountNotFoundException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

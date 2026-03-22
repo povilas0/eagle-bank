@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JdbcAccountRepository implements AccountRepository {
@@ -17,6 +18,20 @@ public class JdbcAccountRepository implements AccountRepository {
     public JdbcAccountRepository(NamedParameterJdbcTemplate jdbcTemplate, AccountPersistenceMapper mapper) {
         this.jdbcTemplate = jdbcTemplate;
         this.mapper = mapper;
+    }
+
+    @Override
+    public Optional<Account> findByAccountNumber(String accountNumber) {
+        var params = new MapSqlParameterSource("accountNumber", accountNumber);
+        return jdbcTemplate.query(
+                """
+                SELECT account_number, sort_code, user_id, name, account_type,
+                    balance, currency, created_timestamp, updated_timestamp
+                FROM accounts WHERE account_number = :accountNumber
+                """,
+                params,
+                (rs, rowNum) -> mapper.toDomain(mapper.toEntity(rs))
+        ).stream().findFirst();
     }
 
     @Override

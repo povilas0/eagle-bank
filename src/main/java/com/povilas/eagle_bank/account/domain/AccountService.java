@@ -19,6 +19,11 @@ public class AccountService {
         return account;
     }
 
+    public Account getAccount(String accountNumber) {
+        return accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+    }
+
     public List<Account> listAccounts(String userId) {
         return accountRepository.findByUserId(userId);
     }
