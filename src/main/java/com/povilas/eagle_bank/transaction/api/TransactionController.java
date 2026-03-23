@@ -3,6 +3,7 @@ package com.povilas.eagle_bank.transaction.api;
 import com.povilas.eagle_bank.transaction.domain.TransactionService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,7 +32,8 @@ public class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TransactionResponse createTransaction(@PathVariable String accountNumber,
-                                                 @Valid @RequestBody CreateTransactionRequest request) {
-        return mapper.toResponse(transactionService.createTransaction(mapper.toCreateCommand(accountNumber, request)));
+                                                 @Valid @RequestBody CreateTransactionRequest request,
+                                                 Authentication authentication) {
+        return mapper.toResponse(transactionService.createTransaction(mapper.toCreateCommand(accountNumber, (String) authentication.getPrincipal(), request)));
     }
 }

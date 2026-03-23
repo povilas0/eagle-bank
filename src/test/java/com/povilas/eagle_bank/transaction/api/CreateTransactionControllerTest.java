@@ -13,8 +13,7 @@ class CreateTransactionControllerTest extends BaseControllerTest {
 
     @Test
     void createTransaction_deposit_returns201WithTransactionResponse() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -57,8 +56,7 @@ class CreateTransactionControllerTest extends BaseControllerTest {
 
     @Test
     void createTransaction_withdrawalWithSufficientFunds_returns201WithTransactionResponse() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
         deposit(accountNumber, 500.00);
 
         mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)
@@ -101,8 +99,7 @@ class CreateTransactionControllerTest extends BaseControllerTest {
 
     @Test
     void createTransaction_withdrawalWithInsufficientFunds_returns422WithErrorMessage() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,6 +111,24 @@ class CreateTransactionControllerTest extends BaseControllerTest {
                                 }
                                 """))
                 .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    void createTransaction_withAnotherUsersAccount_returns403() throws Exception {
+        String otherUserId = createUser();
+        String accountNumber = createAccount(otherUserId);
+
+        mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "amount": 100.00,
+                                    "currency": "GBP",
+                                    "type": "deposit"
+                                }
+                                """))
+                .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message").exists());
     }
 
@@ -134,8 +149,7 @@ class CreateTransactionControllerTest extends BaseControllerTest {
 
     @Test
     void createTransaction_withMissingRequiredFields_returns400WithValidationErrors() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)
                         .contentType(MediaType.APPLICATION_JSON)

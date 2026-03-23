@@ -9,9 +9,10 @@ import java.util.List;
 @Component
 public class TransactionApiMapper {
 
-    public CreateTransactionCommand toCreateCommand(String accountNumber, CreateTransactionRequest request) {
+    public CreateTransactionCommand toCreateCommand(String accountNumber, String authenticatedUserId, CreateTransactionRequest request) {
         return new CreateTransactionCommand(
                 accountNumber,
+                authenticatedUserId,
                 request.amount(),
                 request.currency(),
                 request.type(),

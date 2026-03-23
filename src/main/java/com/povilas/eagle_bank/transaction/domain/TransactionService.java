@@ -20,8 +20,8 @@ public class TransactionService {
         Transaction transaction = new Transaction(command);
 
         switch (transaction.type()) {
-            case DEPOSIT -> accountService.deposit(command.accountNumber(), command.amount());
-            case WITHDRAWAL -> accountService.withdraw(command.accountNumber(), command.amount());
+            case DEPOSIT -> accountService.deposit(command.accountNumber(), command.authenticatedUserId(), command.amount());
+            case WITHDRAWAL -> accountService.withdraw(command.accountNumber(), command.authenticatedUserId(), command.amount());
         }
 
         transactionRepository.save(transaction);

@@ -47,15 +47,21 @@ public class AccountService {
         accountRepository.delete(command.accountNumber());
     }
 
-    public void deposit(String accountNumber, BigDecimal amount) {
+    public void deposit(String accountNumber, String authenticatedUserId, BigDecimal amount) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+        if (!account.userId().equals(authenticatedUserId)) {
+            throw new ForbiddenException();
+        }
         accountRepository.update(account.deposit(amount));
     }
 
-    public void withdraw(String accountNumber, BigDecimal amount) {
+    public void withdraw(String accountNumber, String authenticatedUserId, BigDecimal amount) {
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+        if (!account.userId().equals(authenticatedUserId)) {
+            throw new ForbiddenException();
+        }
         accountRepository.update(account.withdraw(amount));
     }
 

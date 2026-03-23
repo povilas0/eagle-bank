@@ -11,8 +11,7 @@ class FetchTransactionControllerTest extends BaseControllerTest {
 
     @Test
     void fetchTransaction_returnsTransaction() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
         String transactionId = createTransaction(accountNumber, 75.00, "deposit", "Test deposit");
 
         mockMvc.perform(get("/v1/accounts/{accountNumber}/transactions/{transactionId}", accountNumber, transactionId))
@@ -33,8 +32,7 @@ class FetchTransactionControllerTest extends BaseControllerTest {
 
     @Test
     void fetchTransaction_withNonExistentTransactionId_returns404WithErrorMessage() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(get("/v1/accounts/{accountNumber}/transactions/{transactionId}", accountNumber, "tan-nonexistent"))
                 .andExpect(status().isNotFound())

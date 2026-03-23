@@ -11,8 +11,7 @@ class ListTransactionsControllerTest extends BaseControllerTest {
 
     @Test
     void listTransactions_returnsAllTransactionsForAccount() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
         createTransaction(accountNumber, 100.00, "deposit", "First deposit");
         createTransaction(accountNumber, 50.00, "deposit", "Second deposit");
 
@@ -30,8 +29,7 @@ class ListTransactionsControllerTest extends BaseControllerTest {
 
     @Test
     void listTransactions_returnsEmptyListWhenAccountHasNoTransactions() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(get("/v1/accounts/{accountNumber}/transactions", accountNumber))
                 .andExpect(status().isOk())
