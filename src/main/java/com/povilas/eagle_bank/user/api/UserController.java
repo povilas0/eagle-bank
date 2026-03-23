@@ -3,6 +3,7 @@ package com.povilas.eagle_bank.user.api;
 import com.povilas.eagle_bank.user.domain.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,8 +25,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserResponse getUser(@PathVariable String userId) {
-        return mapper.toResponse(userService.getUser(userId));
+    public UserResponse getUser(@PathVariable String userId, Authentication authentication) {
+        return mapper.toResponse(userService.getUser(userId, (String) authentication.getPrincipal()));
     }
 
     @PatchMapping("/{userId}")

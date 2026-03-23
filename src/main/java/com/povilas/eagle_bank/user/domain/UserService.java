@@ -1,5 +1,6 @@
 package com.povilas.eagle_bank.user.domain;
 
+import com.povilas.eagle_bank.common.domain.ForbiddenException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,13 @@ public class UserService {
         return user;
     }
 
-    public User getUser(String userId) {
-        return userRepository.findById(userId)
+    public User getUser(String userId, String authenticatedUserId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
+        if (!userId.equals(authenticatedUserId)) {
+            throw new ForbiddenException();
+        }
+        return user;
     }
 
     public Optional<User> findByEmail(String email) {

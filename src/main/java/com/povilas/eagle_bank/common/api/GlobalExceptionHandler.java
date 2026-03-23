@@ -1,6 +1,7 @@
 package com.povilas.eagle_bank.common.api;
 
 import com.povilas.eagle_bank.account.domain.AccountNotFoundException;
+import com.povilas.eagle_bank.common.domain.ForbiddenException;
 import com.povilas.eagle_bank.account.domain.InsufficientFundsException;
 import com.povilas.eagle_bank.account.domain.InvalidAccountTypeException;
 import com.povilas.eagle_bank.transaction.domain.InvalidTransactionTypeException;
@@ -23,6 +24,12 @@ public class GlobalExceptionHandler {
     record BadRequestErrorResponse(String message, List<ErrorDetail> details) {}
 
     record ErrorResponse(String message) {}
+
+    @ExceptionHandler(ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbidden(ForbiddenException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
 
     @ExceptionHandler(AccountNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

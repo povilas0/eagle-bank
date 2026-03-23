@@ -30,6 +30,7 @@ public abstract class BaseControllerTest {
 
     protected MockMvc mockMvc;
     protected MockMvc mockMvcNoAuth;
+    protected String authUserId;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -39,7 +40,8 @@ public abstract class BaseControllerTest {
 
         mockMvcNoAuth = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
 
-        String token = createAuthToken();
+        authUserId = createAuthUser();
+        String token = login("auth@example.com", "Password123!");
 
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .apply(springSecurity())
@@ -47,8 +49,8 @@ public abstract class BaseControllerTest {
                 .build();
     }
 
-    private String createAuthToken() throws Exception {
-        mockMvcNoAuth.perform(post("/v1/users")
+    private String createAuthUser() throws Exception {
+        var result = mockMvcNoAuth.perform(post("/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
@@ -64,16 +66,21 @@ public abstract class BaseControllerTest {
                                     "password": "Password123!"
                                 }
                                 """))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
 
+        return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asText();
+    }
+
+    private String login(String email, String password) throws Exception {
         var result = mockMvcNoAuth.perform(post("/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "email": "auth@example.com",
-                                    "password": "Password123!"
+                                    "email": "%s",
+                                    "password": "%s"
                                 }
-                                """))
+                                """.formatted(email, password)))
                 .andExpect(status().isOk())
                 .andReturn();
 

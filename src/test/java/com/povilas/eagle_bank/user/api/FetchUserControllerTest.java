@@ -9,21 +9,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FetchUserControllerTest extends BaseControllerTest {
 
     @Test
-    void fetchUser_withExistingUserId_returns200() throws Exception {
-        String userId = createUser("test@example.com", "Password123!");
-
-        mockMvc.perform(get("/v1/users/{userId}", userId))
+    void fetchUser_returnsOwnProfile() throws Exception {
+        mockMvc.perform(get("/v1/users/{userId}", authUserId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userId))
-                .andExpect(jsonPath("$.name").value("Test User"))
-                .andExpect(jsonPath("$.address.line1").value("123 Test Street"))
-                .andExpect(jsonPath("$.address.town").value("Test Town"))
-                .andExpect(jsonPath("$.address.county").value("Test County"))
-                .andExpect(jsonPath("$.address.postcode").value("TE1 1ST"))
+                .andExpect(jsonPath("$.id").value(authUserId))
+                .andExpect(jsonPath("$.name").value("Auth Test User"))
+                .andExpect(jsonPath("$.address.line1").value("1 Auth Street"))
+                .andExpect(jsonPath("$.address.town").value("Auth Town"))
+                .andExpect(jsonPath("$.address.county").value("Auth County"))
+                .andExpect(jsonPath("$.address.postcode").value("AU1 1TH"))
                 .andExpect(jsonPath("$.phoneNumber").value("+441234567890"))
-                .andExpect(jsonPath("$.email").value("test@example.com"))
+                .andExpect(jsonPath("$.email").value("auth@example.com"))
                 .andExpect(jsonPath("$.createdTimestamp").exists())
                 .andExpect(jsonPath("$.updatedTimestamp").exists());
+    }
+
+    @Test
+    void fetchUser_withAnotherUserId_returns403() throws Exception {
+        String otherUserId = createUser();
+
+        mockMvc.perform(get("/v1/users/{userId}", otherUserId))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
@@ -32,5 +39,4 @@ class FetchUserControllerTest extends BaseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").exists());
     }
-
 }
