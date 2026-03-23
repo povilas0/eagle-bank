@@ -28,14 +28,14 @@ public class TransactionService {
         return transaction;
     }
 
-    public Transaction getTransaction(String accountNumber, String transactionId) {
-        accountService.getAccount(accountNumber);
+    public Transaction getTransaction(String accountNumber, String transactionId, String authenticatedUserId) {
+        accountService.getAccount(accountNumber, authenticatedUserId);
         return transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new TransactionNotFoundException(transactionId));
     }
 
-    public List<Transaction> listTransactions(String accountNumber) {
-        accountService.getAccount(accountNumber);
+    public List<Transaction> listTransactions(String accountNumber, String authenticatedUserId) {
+        accountService.getAccount(accountNumber, authenticatedUserId);
         return transactionRepository.findByAccountNumber(accountNumber);
     }
 }

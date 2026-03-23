@@ -19,14 +19,16 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ListTransactionsResponse listTransactions(@PathVariable String accountNumber) {
-        return mapper.toListResponse(transactionService.listTransactions(accountNumber));
+    public ListTransactionsResponse listTransactions(@PathVariable String accountNumber,
+                                                     Authentication authentication) {
+        return mapper.toListResponse(transactionService.listTransactions(accountNumber, (String) authentication.getPrincipal()));
     }
 
     @GetMapping("/{transactionId}")
     public TransactionResponse getTransaction(@PathVariable String accountNumber,
-                                              @PathVariable String transactionId) {
-        return mapper.toResponse(transactionService.getTransaction(accountNumber, transactionId));
+                                              @PathVariable String transactionId,
+                                              Authentication authentication) {
+        return mapper.toResponse(transactionService.getTransaction(accountNumber, transactionId, (String) authentication.getPrincipal()));
     }
 
     @PostMapping

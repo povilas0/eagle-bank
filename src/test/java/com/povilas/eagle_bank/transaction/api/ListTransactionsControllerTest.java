@@ -38,6 +38,16 @@ class ListTransactionsControllerTest extends BaseControllerTest {
     }
 
     @Test
+    void listTransactions_withAnotherUsersAccount_returns403() throws Exception {
+        String otherUserId = createUser();
+        String accountNumber = createAccount(otherUserId);
+
+        mockMvc.perform(get("/v1/accounts/{accountNumber}/transactions", accountNumber))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
     void listTransactions_withNonExistentAccountNumber_returns404WithErrorMessage() throws Exception {
         mockMvc.perform(get("/v1/accounts/{accountNumber}/transactions", "01999999"))
                 .andExpect(status().isNotFound())
