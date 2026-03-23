@@ -9,13 +9,14 @@ public record User(
         Address address,
         String phoneNumber,
         String email,
+        String passwordHash,
         Instant createdTimestamp,
         Instant updatedTimestamp
 ) {
-    public User(CreateUserCommand command) {
+    public User(CreateUserCommand command, String passwordHash) {
         this("usr-" + UUID.randomUUID().toString().replace("-", ""),
                 command.name(), command.address(), command.phoneNumber(), command.email(),
-                Instant.now(), Instant.now());
+                passwordHash, Instant.now(), Instant.now());
     }
 
     public User withUpdates(UpdateUserCommand command) {
@@ -25,6 +26,7 @@ public record User(
                 command.address() != null ? command.address() : address,
                 command.phoneNumber() != null ? command.phoneNumber() : phoneNumber,
                 command.email() != null ? command.email() : email,
+                passwordHash,
                 createdTimestamp,
                 Instant.now()
         );

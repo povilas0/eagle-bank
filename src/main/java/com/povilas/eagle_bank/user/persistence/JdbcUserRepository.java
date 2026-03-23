@@ -24,11 +24,27 @@ public class JdbcUserRepository implements UserRepository {
         var params = new MapSqlParameterSource("id", id);
         return jdbcTemplate.query(
                 """
-                SELECT id, name, email, phone_number,
+                SELECT id, name, email, phone_number, password_hash,
                     address_line1, address_line2, address_line3,
                     address_town, address_county, address_postcode,
                     created_timestamp, updated_timestamp
                 FROM users WHERE id = :id
+                """,
+                params,
+                (rs, rowNum) -> mapper.toDomain(mapper.toEntity(rs))
+        ).stream().findFirst();
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        var params = new MapSqlParameterSource("email", email);
+        return jdbcTemplate.query(
+                """
+                SELECT id, name, email, phone_number, password_hash,
+                    address_line1, address_line2, address_line3,
+                    address_town, address_county, address_postcode,
+                    created_timestamp, updated_timestamp
+                FROM users WHERE email = :email
                 """,
                 params,
                 (rs, rowNum) -> mapper.toDomain(mapper.toEntity(rs))
@@ -86,6 +102,7 @@ public class JdbcUserRepository implements UserRepository {
                 .addValue("name", entity.name())
                 .addValue("email", entity.email())
                 .addValue("phoneNumber", entity.phoneNumber())
+                .addValue("passwordHash", entity.passwordHash())
                 .addValue("addressLine1", entity.addressLine1())
                 .addValue("addressLine2", entity.addressLine2())
                 .addValue("addressLine3", entity.addressLine3())
@@ -96,11 +113,11 @@ public class JdbcUserRepository implements UserRepository {
                 .addValue("updatedTimestamp", entity.updatedTimestamp());
         jdbcTemplate.update(
                 """
-                INSERT INTO users (id, name, email, phone_number,
+                INSERT INTO users (id, name, email, phone_number, password_hash,
                     address_line1, address_line2, address_line3,
                     address_town, address_county, address_postcode,
                     created_timestamp, updated_timestamp)
-                VALUES (:id, :name, :email, :phoneNumber,
+                VALUES (:id, :name, :email, :phoneNumber, :passwordHash,
                     :addressLine1, :addressLine2, :addressLine3,
                     :addressTown, :addressCounty, :addressPostcode,
                     :createdTimestamp, :updatedTimestamp)

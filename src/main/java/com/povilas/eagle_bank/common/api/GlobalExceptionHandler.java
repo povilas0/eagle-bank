@@ -5,6 +5,7 @@ import com.povilas.eagle_bank.account.domain.InsufficientFundsException;
 import com.povilas.eagle_bank.account.domain.InvalidAccountTypeException;
 import com.povilas.eagle_bank.transaction.domain.InvalidTransactionTypeException;
 import com.povilas.eagle_bank.transaction.domain.TransactionNotFoundException;
+import com.povilas.eagle_bank.auth.domain.InvalidCredentialsException;
 import com.povilas.eagle_bank.user.domain.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccountNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleAccountNotFound(AccountNotFoundException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponse handleInvalidCredentials(InvalidCredentialsException ex) {
         return new ErrorResponse(ex.getMessage());
     }
 

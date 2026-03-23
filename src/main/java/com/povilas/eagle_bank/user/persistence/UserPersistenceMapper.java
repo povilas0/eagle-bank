@@ -17,6 +17,7 @@ public class UserPersistenceMapper {
                 user.name(),
                 user.email(),
                 user.phoneNumber(),
+                user.passwordHash(),
                 user.address().line1(),
                 user.address().line2(),
                 user.address().line3(),
@@ -34,6 +35,7 @@ public class UserPersistenceMapper {
                 rs.getString("name"),
                 rs.getString("email"),
                 rs.getString("phone_number"),
+                rs.getString("password_hash"),
                 rs.getString("address_line1"),
                 rs.getString("address_line2"),
                 rs.getString("address_line3"),
@@ -60,6 +62,7 @@ public class UserPersistenceMapper {
                 address,
                 entity.phoneNumber(),
                 entity.email(),
+                entity.passwordHash(),
                 entity.createdTimestamp().toInstant(),
                 entity.updatedTimestamp().toInstant()
         );

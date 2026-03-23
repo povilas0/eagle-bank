@@ -138,7 +138,8 @@ class CreateUserControllerTest extends BaseControllerTest {
                         "postcode": "TE1 1ST"
                     },
                     "phoneNumber": "+441234567890",
-                    "email": "test@example.com"
+                    "email": "test@example.com",
+                    "password": "Password123!"
                 }
                 """;
     }

@@ -10,7 +10,7 @@ class FetchUserControllerTest extends BaseControllerTest {
 
     @Test
     void fetchUser_withExistingUserId_returns200() throws Exception {
-        String userId = createUser();
+        String userId = createUser("test@example.com", "Password123!");
 
         mockMvc.perform(get("/v1/users/{userId}", userId))
                 .andExpect(status().isOk())

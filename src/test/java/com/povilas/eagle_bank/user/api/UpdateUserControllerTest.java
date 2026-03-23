@@ -12,7 +12,7 @@ class UpdateUserControllerTest extends BaseControllerTest {
 
     @Test
     void updateUser_withPartialData_returns200WithUpdatedAndPreservedFields() throws Exception {
-        String userId = createUser();
+        String userId = createUser("test@example.com", "Password123!");
 
         String updateBody = """
                 {

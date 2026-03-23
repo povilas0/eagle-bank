@@ -7,6 +7,7 @@ public record UserEntity(
         String name,
         String email,
         String phoneNumber,
+        String passwordHash,
         String addressLine1,
         String addressLine2,
         String addressLine3,

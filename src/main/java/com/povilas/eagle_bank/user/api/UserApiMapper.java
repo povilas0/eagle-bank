@@ -19,7 +19,7 @@ public class UserApiMapper {
                 request.address().county(),
                 request.address().postcode()
         );
-        return new CreateUserCommand(request.name(), address, request.phoneNumber(), request.email());
+        return new CreateUserCommand(request.name(), address, request.phoneNumber(), request.email(), request.password());
     }
 
     public DeleteUserCommand toDeleteCommand(String userId) {

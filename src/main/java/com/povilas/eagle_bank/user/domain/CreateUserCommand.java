@@ -4,5 +4,6 @@ public record CreateUserCommand(
         String name,
         Address address,
         String phoneNumber,
-        String email
+        String email,
+        String password
 ) {}
