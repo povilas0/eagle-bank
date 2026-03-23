@@ -1,5 +1,6 @@
 package com.povilas.eagle_bank.account.domain;
 
+import com.povilas.eagle_bank.common.domain.ForbiddenException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,13 +26,24 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(accountNumber));
     }
 
+    public Account getAccount(String accountNumber, String authenticatedUserId) {
+        Account account = getAccount(accountNumber);
+        if (!account.userId().equals(authenticatedUserId)) {
+            throw new ForbiddenException();
+        }
+        return account;
+    }
+
     public List<Account> listAccounts(String userId) {
         return accountRepository.findByUserId(userId);
     }
 
-    public void deleteAccount(DeleteAccountCommand command) {
-        accountRepository.findByAccountNumber(command.accountNumber())
+    public void deleteAccount(DeleteAccountCommand command, String authenticatedUserId) {
+        Account account = accountRepository.findByAccountNumber(command.accountNumber())
                 .orElseThrow(() -> new AccountNotFoundException(command.accountNumber()));
+        if (!account.userId().equals(authenticatedUserId)) {
+            throw new ForbiddenException();
+        }
         accountRepository.delete(command.accountNumber());
     }
 
@@ -47,9 +59,12 @@ public class AccountService {
         accountRepository.update(account.withdraw(amount));
     }
 
-    public Account updateAccount(String accountNumber, UpdateAccountCommand command) {
+    public Account updateAccount(String accountNumber, String authenticatedUserId, UpdateAccountCommand command) {
         Account existing = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountNotFoundException(accountNumber));
+        if (!existing.userId().equals(authenticatedUserId)) {
+            throw new ForbiddenException();
+        }
         Account updated = existing.withUpdates(command);
         accountRepository.update(updated);
         return updated;

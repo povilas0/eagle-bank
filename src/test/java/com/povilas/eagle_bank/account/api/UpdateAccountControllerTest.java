@@ -11,9 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UpdateAccountControllerTest extends BaseControllerTest {
 
     @Test
-    void updateAccount_withValidData_returns200WithUpdatedAccount() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+    void updateAccount_withOwnAccount_returns200WithUpdatedAccount() throws Exception {
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(patch("/v1/accounts/{accountNumber}", accountNumber)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -30,6 +29,22 @@ class UpdateAccountControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.currency").value("GBP"))
                 .andExpect(jsonPath("$.createdTimestamp").exists())
                 .andExpect(jsonPath("$.updatedTimestamp").exists());
+    }
+
+    @Test
+    void updateAccount_withAnotherUsersAccount_returns403() throws Exception {
+        String otherUserId = createUser();
+        String accountNumber = createAccount(otherUserId);
+
+        mockMvc.perform(patch("/v1/accounts/{accountNumber}", accountNumber)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "name": "Hacked Name"
+                                }
+                                """))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test

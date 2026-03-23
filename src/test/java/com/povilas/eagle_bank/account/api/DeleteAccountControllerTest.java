@@ -11,15 +11,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DeleteAccountControllerTest extends BaseControllerTest {
 
     @Test
-    void deleteAccount_withExistingAccountNumber_returns204() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+    void deleteAccount_withOwnAccountNumber_returns204() throws Exception {
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(delete("/v1/accounts/{accountNumber}", accountNumber))
                 .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/v1/accounts/{accountNumber}", accountNumber))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteAccount_withAnotherUsersAccount_returns403() throws Exception {
+        String otherUserId = createUser();
+        String accountNumber = createAccount(otherUserId);
+
+        mockMvc.perform(delete("/v1/accounts/{accountNumber}", accountNumber))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test

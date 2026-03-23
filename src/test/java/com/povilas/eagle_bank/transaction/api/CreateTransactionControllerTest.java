@@ -37,8 +37,7 @@ class CreateTransactionControllerTest extends BaseControllerTest {
 
     @Test
     void createTransaction_deposit_updatesAccountBalance() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,8 +80,7 @@ class CreateTransactionControllerTest extends BaseControllerTest {
 
     @Test
     void createTransaction_withdrawalWithSufficientFunds_updatesAccountBalance() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+        String accountNumber = createAccount(authUserId);
         deposit(accountNumber, 500.00);
 
         mockMvc.perform(post("/v1/accounts/{accountNumber}/transactions", accountNumber)

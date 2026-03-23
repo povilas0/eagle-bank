@@ -10,9 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class FetchAccountControllerTest extends BaseControllerTest {
 
     @Test
-    void fetchAccount_withExistingAccountNumber_returns200() throws Exception {
-        String userId = createUser();
-        String accountNumber = createAccount(userId);
+    void fetchAccount_withOwnAccountNumber_returns200() throws Exception {
+        String accountNumber = createAccount(authUserId);
 
         mockMvc.perform(get("/v1/accounts/{accountNumber}", accountNumber))
                 .andExpect(status().isOk())
@@ -24,6 +23,16 @@ class FetchAccountControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$.currency").value("GBP"))
                 .andExpect(jsonPath("$.createdTimestamp").exists())
                 .andExpect(jsonPath("$.updatedTimestamp").exists());
+    }
+
+    @Test
+    void fetchAccount_withAnotherUsersAccountNumber_returns403() throws Exception {
+        String otherUserId = createUser();
+        String accountNumber = createAccount(otherUserId);
+
+        mockMvc.perform(get("/v1/accounts/{accountNumber}", accountNumber))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
