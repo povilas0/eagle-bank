@@ -80,6 +80,12 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(ex.getMessage());
     }
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleUnexpectedException(Exception ex) {
+        return new ErrorResponse("An unexpected error occurred");
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BadRequestErrorResponse handleValidationErrors(MethodArgumentNotValidException ex) {

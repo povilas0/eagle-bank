@@ -2,6 +2,7 @@ package com.povilas.eagle_bank.transaction.domain;
 
 import com.povilas.eagle_bank.account.domain.AccountService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class TransactionService {
         this.accountService = accountService;
     }
 
+    @Transactional
     public Transaction createTransaction(CreateTransactionCommand command) {
         Transaction transaction = new Transaction(command);
 
@@ -28,6 +30,7 @@ public class TransactionService {
         return transaction;
     }
 
+    @Transactional(readOnly = true)
     public Transaction getTransaction(String accountNumber, String transactionId, String authenticatedUserId) {
         accountService.getAccount(accountNumber, authenticatedUserId);
         Transaction transaction = transactionRepository.findById(transactionId)
@@ -38,6 +41,7 @@ public class TransactionService {
         return transaction;
     }
 
+    @Transactional(readOnly = true)
     public List<Transaction> listTransactions(String accountNumber, String authenticatedUserId) {
         accountService.getAccount(accountNumber, authenticatedUserId);
         return transactionRepository.findByAccountNumber(accountNumber);
