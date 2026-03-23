@@ -31,8 +31,9 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public UserResponse updateUser(@PathVariable String userId,
-                                   @Valid @RequestBody UpdateUserRequest request) {
-        return mapper.toResponse(userService.updateUser(userId, mapper.toUpdateCommand(request)));
+                                   @Valid @RequestBody UpdateUserRequest request,
+                                   Authentication authentication) {
+        return mapper.toResponse(userService.updateUser(userId, (String) authentication.getPrincipal(), mapper.toUpdateCommand(request)));
     }
 
     @PostMapping

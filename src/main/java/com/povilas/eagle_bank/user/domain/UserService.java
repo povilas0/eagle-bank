@@ -37,9 +37,12 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    public User updateUser(String userId, UpdateUserCommand command) {
+up    public User updateUser(String userId, String authenticatedUserId, UpdateUserCommand command) {
         User existing = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
+        if (!userId.equals(authenticatedUserId)) {
+            throw new ForbiddenException();
+        }
         User updated = existing.withUpdates(command);
         userRepository.update(updated);
         return updated;

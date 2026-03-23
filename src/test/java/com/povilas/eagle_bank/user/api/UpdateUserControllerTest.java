@@ -12,29 +12,38 @@ class UpdateUserControllerTest extends BaseControllerTest {
 
     @Test
     void updateUser_withPartialData_returns200WithUpdatedAndPreservedFields() throws Exception {
-        String userId = createUser("test@example.com", "Password123!");
-
-        String updateBody = """
-                {
-                    "name": "Updated Name",
-                    "phoneNumber": "+449876543210"
-                }
-                """;
-
-        mockMvc.perform(patch("/v1/users/{userId}", userId)
+        mockMvc.perform(patch("/v1/users/{userId}", authUserId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(updateBody))
+                        .content("""
+                                {
+                                    "name": "Updated Name",
+                                    "phoneNumber": "+449876543210"
+                                }
+                                """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userId))
+                .andExpect(jsonPath("$.id").value(authUserId))
                 .andExpect(jsonPath("$.name").value("Updated Name"))
                 .andExpect(jsonPath("$.phoneNumber").value("+449876543210"))
-                .andExpect(jsonPath("$.email").value("test@example.com"))
-                .andExpect(jsonPath("$.address.line1").value("123 Test Street"))
-                .andExpect(jsonPath("$.address.town").value("Test Town"))
-                .andExpect(jsonPath("$.address.county").value("Test County"))
-                .andExpect(jsonPath("$.address.postcode").value("TE1 1ST"))
+                .andExpect(jsonPath("$.email").value("auth@example.com"))
+                .andExpect(jsonPath("$.address.line1").value("1 Auth Street"))
+                .andExpect(jsonPath("$.address.town").value("Auth Town"))
+                .andExpect(jsonPath("$.address.county").value("Auth County"))
+                .andExpect(jsonPath("$.address.postcode").value("AU1 1TH"))
                 .andExpect(jsonPath("$.createdTimestamp").exists())
                 .andExpect(jsonPath("$.updatedTimestamp").exists());
+    }
+
+    @Test
+    void updateUser_withAnotherUserId_returns403() throws Exception {
+        String otherUserId = createUser();
+
+        mockMvc.perform(patch("/v1/users/{userId}", otherUserId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name": "Hacked Name"}
+                                """))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
@@ -45,5 +54,4 @@ class UpdateUserControllerTest extends BaseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").exists());
     }
-
 }
