@@ -18,11 +18,14 @@ class CreateAccountControllerTest extends BaseControllerTest {
 
     @Test
     void createAccount_withValidData_returns201() throws Exception {
-        String userId = createUser();
-
         mockMvc.perform(post("/v1/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(validRequest(userId)))
+                        .content("""
+                                {
+                                    "name": "Personal Account",
+                                    "accountType": "personal"
+                                }
+                                """))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accountNumber").value(matchesPattern("^01\\d{6}$")))
                 .andExpect(jsonPath("$.sortCode").value("10-10-10"))
@@ -50,46 +53,26 @@ class CreateAccountControllerTest extends BaseControllerTest {
 
     static Stream<Arguments> invalidRequests() {
         return Stream.of(
-                Arguments.of("missing userId",
-                        """
-                        { "name": "Personal Account", "accountType": "personal" }
-                        """,
-                        "userId"),
-                Arguments.of("blank userId",
-                        """
-                        { "userId": "", "name": "Personal Account", "accountType": "personal" }
-                        """,
-                        "userId"),
                 Arguments.of("missing name",
                         """
-                        { "userId": "usr-abc123", "accountType": "personal" }
+                        { "accountType": "personal" }
                         """,
                         "name"),
                 Arguments.of("blank name",
                         """
-                        { "userId": "usr-abc123", "name": "", "accountType": "personal" }
+                        { "name": "", "accountType": "personal" }
                         """,
                         "name"),
                 Arguments.of("missing accountType",
                         """
-                        { "userId": "usr-abc123", "name": "Personal Account" }
+                        { "name": "Personal Account" }
                         """,
                         "accountType"),
                 Arguments.of("blank accountType",
                         """
-                        { "userId": "usr-abc123", "name": "Personal Account", "accountType": "" }
+                        { "name": "Personal Account", "accountType": "" }
                         """,
                         "accountType")
         );
-    }
-
-    private static String validRequest(String userId) {
-        return """
-                {
-                    "userId": "%s",
-                    "name": "Personal Account",
-                    "accountType": "personal"
-                }
-                """.formatted(userId);
     }
 }

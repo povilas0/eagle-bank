@@ -24,14 +24,14 @@ public class AccountController {
     }
 
     @GetMapping
-    public ListAccountsResponse listAccounts(@RequestParam String userId) {
-        return mapper.toListResponse(accountService.listAccounts(userId));
+    public ListAccountsResponse listAccounts(Authentication authentication) {
+        return mapper.toListResponse(accountService.listAccounts((String) authentication.getPrincipal()));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResponse createAccount(@Valid @RequestBody CreateAccountRequest request) {
-        return mapper.toResponse(accountService.createAccount(mapper.toCreateCommand(request)));
+    public AccountResponse createAccount(@Valid @RequestBody CreateAccountRequest request, Authentication authentication) {
+        return mapper.toResponse(accountService.createAccount(mapper.toCreateCommand(request, (String) authentication.getPrincipal())));
     }
 
     @PatchMapping("/{accountNumber}")

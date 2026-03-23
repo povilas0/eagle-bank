@@ -41,6 +41,17 @@ class FetchTransactionControllerTest extends BaseControllerTest {
     }
 
     @Test
+    void fetchTransaction_withTransactionFromWrongAccount_returns404WithErrorMessage() throws Exception {
+        String accountNumber1 = createAccount(authUserId);
+        String accountNumber2 = createAccount(authUserId);
+        String transactionId = createTransaction(accountNumber2, 50.00, "deposit", "Test deposit");
+
+        mockMvc.perform(get("/v1/accounts/{accountNumber}/transactions/{transactionId}", accountNumber1, transactionId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
     void fetchTransaction_withNonExistentTransactionId_returns404WithErrorMessage() throws Exception {
         String accountNumber = createAccount(authUserId);
 

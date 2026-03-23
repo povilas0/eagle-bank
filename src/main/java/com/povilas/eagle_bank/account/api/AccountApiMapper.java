@@ -11,8 +11,8 @@ import java.util.List;
 @Component
 public class AccountApiMapper {
 
-    public CreateAccountCommand toCreateCommand(CreateAccountRequest request) {
-        return new CreateAccountCommand(request.userId(), request.name(), request.accountType());
+    public CreateAccountCommand toCreateCommand(CreateAccountRequest request, String userId) {
+        return new CreateAccountCommand(userId, request.name(), request.accountType());
     }
 
     public UpdateAccountCommand toUpdateCommand(UpdateAccountRequest request) {

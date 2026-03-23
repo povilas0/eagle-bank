@@ -30,8 +30,12 @@ public class TransactionService {
 
     public Transaction getTransaction(String accountNumber, String transactionId, String authenticatedUserId) {
         accountService.getAccount(accountNumber, authenticatedUserId);
-        return transactionRepository.findById(transactionId)
+        Transaction transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new TransactionNotFoundException(transactionId));
+        if (!transaction.accountNumber().equals(accountNumber)) {
+            throw new TransactionNotFoundException(transactionId);
+        }
+        return transaction;
     }
 
     public List<Transaction> listTransactions(String accountNumber, String authenticatedUserId) {

@@ -10,12 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ListAccountsControllerTest extends BaseControllerTest {
 
     @Test
-    void listAccounts_returnsAllAccountsForUser() throws Exception {
-        String userId = createUser();
-        createAccount(userId, "Current Account");
-        createAccount(userId, "Savings Account");
+    void listAccounts_returnsAllAccountsForAuthenticatedUser() throws Exception {
+        createAccount(authUserId, "Current Account");
+        createAccount(authUserId, "Savings Account");
 
-        mockMvc.perform(get("/v1/accounts").param("userId", userId))
+        mockMvc.perform(get("/v1/accounts"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accounts").isArray())
                 .andExpect(jsonPath("$.accounts.length()").value(2))
@@ -25,12 +24,9 @@ class ListAccountsControllerTest extends BaseControllerTest {
 
     @Test
     void listAccounts_returnsEmptyListWhenUserHasNoAccounts() throws Exception {
-        String userId = createUser();
-
-        mockMvc.perform(get("/v1/accounts").param("userId", userId))
+        mockMvc.perform(get("/v1/accounts"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accounts").isArray())
                 .andExpect(jsonPath("$.accounts.length()").value(0));
     }
-
 }

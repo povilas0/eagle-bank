@@ -10,6 +10,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -32,16 +34,19 @@ public abstract class BaseControllerTest {
     protected MockMvc mockMvcNoAuth;
     protected String authUserId;
 
+    private final Map<String, String> userEmails = new HashMap<>();
+
     @BeforeEach
     void setUp() throws Exception {
         jdbcTemplate.execute("DELETE FROM transactions");
         jdbcTemplate.execute("DELETE FROM accounts");
         jdbcTemplate.execute("DELETE FROM users");
+        userEmails.clear();
 
         mockMvcNoAuth = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
 
         authUserId = createAuthUser();
-        String token = login("auth@example.com", "Password123!");
+        String token = getToken("auth@example.com");
 
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .apply(springSecurity())
@@ -72,19 +77,28 @@ public abstract class BaseControllerTest {
         return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asText();
     }
 
-    private String login(String email, String password) throws Exception {
+    private String getToken(String email) throws Exception {
         var result = mockMvcNoAuth.perform(post("/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
                                     "email": "%s",
-                                    "password": "%s"
+                                    "password": "Password123!"
                                 }
-                                """.formatted(email, password)))
+                                """.formatted(email)))
                 .andExpect(status().isOk())
                 .andReturn();
 
         return objectMapper.readTree(result.getResponse().getContentAsString()).get("token").asText();
+    }
+
+    private MockMvc buildMockMvcFor(String userId) throws Exception {
+        String email = userEmails.get(userId);
+        String token = getToken(email);
+        return MockMvcBuilders.webAppContextSetup(wac)
+                .apply(springSecurity())
+                .defaultRequest(get("/").header("Authorization", "Bearer " + token))
+                .build();
     }
 
     protected String createUser() throws Exception {
@@ -111,7 +125,9 @@ public abstract class BaseControllerTest {
                 .andExpect(status().isCreated())
                 .andReturn();
 
-        return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asText();
+        String userId = objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asText();
+        userEmails.put(userId, email);
+        return userId;
     }
 
     protected String createAccount(String userId) throws Exception {
@@ -119,15 +135,15 @@ public abstract class BaseControllerTest {
     }
 
     protected String createAccount(String userId, String name) throws Exception {
-        var result = mockMvc.perform(post("/v1/accounts")
+        MockMvc mc = userId.equals(authUserId) ? mockMvc : buildMockMvcFor(userId);
+        var result = mc.perform(post("/v1/accounts")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "userId": "%s",
                                     "name": "%s",
                                     "accountType": "personal"
                                 }
-                                """.formatted(userId, name)))
+                                """.formatted(name)))
                 .andExpect(status().isCreated())
                 .andReturn();
 
