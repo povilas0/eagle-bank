@@ -1,5 +1,6 @@
 package com.povilas.eagle_bank.user.domain;
 
+import com.povilas.eagle_bank.account.domain.AccountService;
 import com.povilas.eagle_bank.common.domain.ForbiddenException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, AccountService accountService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.accountService = accountService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -53,6 +56,9 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(command.userId()));
         if (!command.userId().equals(authenticatedUserId)) {
             throw new ForbiddenException();
+        }
+        if (!accountService.listAccounts(command.userId()).isEmpty()) {
+            throw new UserHasAccountsException(command.userId());
         }
         userRepository.delete(command.userId());
     }

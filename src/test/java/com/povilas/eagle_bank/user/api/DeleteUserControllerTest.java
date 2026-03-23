@@ -25,6 +25,15 @@ class DeleteUserControllerTest extends BaseControllerTest {
     }
 
     @Test
+    void deleteUser_withExistingAccounts_returns409WithErrorMessage() throws Exception {
+        createAccount(authUserId);
+
+        mockMvc.perform(delete("/v1/users/{userId}", authUserId))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
     void deleteUser_withNonExistentUserId_returns404WithErrorMessage() throws Exception {
         mockMvc.perform(delete("/v1/users/{userId}", "usr-doesnotexist"))
                 .andExpect(status().isNotFound())
