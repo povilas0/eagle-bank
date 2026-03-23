@@ -37,7 +37,7 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-up    public User updateUser(String userId, String authenticatedUserId, UpdateUserCommand command) {
+    public User updateUser(String userId, String authenticatedUserId, UpdateUserCommand command) {
         User existing = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
         if (!userId.equals(authenticatedUserId)) {
@@ -48,9 +48,12 @@ up    public User updateUser(String userId, String authenticatedUserId, UpdateUs
         return updated;
     }
 
-    public void deleteUser(DeleteUserCommand command) {
+    public void deleteUser(DeleteUserCommand command, String authenticatedUserId) {
         userRepository.findById(command.userId())
                 .orElseThrow(() -> new UserNotFoundException(command.userId()));
+        if (!command.userId().equals(authenticatedUserId)) {
+            throw new ForbiddenException();
+        }
         userRepository.delete(command.userId());
     }
 }

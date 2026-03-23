@@ -10,11 +10,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DeleteUserControllerTest extends BaseControllerTest {
 
     @Test
-    void deleteUser_withExistingUserId_returns204() throws Exception {
-        String userId = createUser();
-
-        mockMvc.perform(delete("/v1/users/{userId}", userId))
+    void deleteUser_withOwnUserId_returns204() throws Exception {
+        mockMvc.perform(delete("/v1/users/{userId}", authUserId))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteUser_withAnotherUserId_returns403() throws Exception {
+        String otherUserId = createUser();
+
+        mockMvc.perform(delete("/v1/users/{userId}", otherUserId))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
@@ -23,5 +30,4 @@ class DeleteUserControllerTest extends BaseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").exists());
     }
-
 }
